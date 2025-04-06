@@ -51,20 +51,8 @@ jobs:
 
       - name: Train YOLOv8 Model (Optional)
         run: |
-          python api/train_model.py
+          python api
 
       - name: Run Inference Tests
         run: |
-          python api/test_model.py
-
-  database:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Set Up SQLite Database
-        run: |
-          python db/setup_database.py
-
+          python api

@@ -9,10 +9,8 @@ on:
       - main
 
 jobs:
-  setup:
+  backend:
     runs-on: ubuntu-latest
-    outputs:
-      python-version: '3.10'
 
     steps:
       - name: Checkout Code
@@ -23,36 +21,44 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install All Dependencies
+      - name: Install Dependencies
         run: |
+          cd api
           pip install -r requirements.txt
-
-  backend:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
 
       - name: Run Django Migrations
         run: |
+          cd api
           python manage.py migrate
 
       - name: Run Backend Tests
         run: |
+          cd api
           python manage.py test
 
   model:
     runs-on: ubuntu-latest
-    needs: setup
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          cd api
+          pip install -r requirements.txt
+
       - name: Train YOLOv8 Model (Optional)
         run: |
-          python api
+          cd api
+          python train_model.py
 
       - name: Run Inference Tests
         run: |
-          python api
+          cd api
+          python test_model.py

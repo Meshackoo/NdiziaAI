@@ -1,0 +1,103 @@
+name: Fullstack CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.12.0'
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run Frontend Build
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Run Frontend Tests
+        run: |
+          cd frontend
+          npm test
+
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+
+      - name: Run Django Migrations
+        run: |
+          cd backend
+          python manage.py migrate
+
+      - name: Run Backend Tests
+        run: |
+          cd backend
+          python manage.py test
+
+  model:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Python for YOLOv8
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Model Dependencies
+        run: |
+          cd api
+          pip install -r requirements.txt
+
+      - name: Train YOLOv8 Model (Optional)
+        run: |
+          cd api
+          python train_model.py
+
+      - name: Run Inference Tests
+        run: |
+          cd api
+          python test_model.py
+
+  database:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up SQLite Database
+        run: |
+          cd db
+          python setup_database.py

@@ -49,9 +49,9 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Train YOLOv8 Model (Optional)
+      - name: Validate Dataset Structure
         run: |
-          - name: Validate Dataset Structure
           ls dataset
           ls dataset/train
           cat dataset/data.yaml
+
